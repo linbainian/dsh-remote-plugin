@@ -1,0 +1,69 @@
+{
+  "name": "dsh-remote-aliyun",
+  "version": "0.5.1",
+  "description": "DeepSeek Harness (DSH) Desktop remote-control plugin: persistent links, QR pairing and mobile UI",
+  "icon": "./assets/icon.svg",
+  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "desktop-plugin", "remote-control", "self-hosted", "ssh-tunnel"],
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linbainian/dsh-remote-plugin.git"
+  },
+  "homepage": "https://github.com/linbainian/dsh-remote-plugin#readme",
+  "bugs": "https://github.com/linbainian/dsh-remote-plugin/issues",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": "./src/plugin.mjs",
+    "./client": "./client/index.js",
+    "./locale/*": "./locale/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src/",
+    "client/",
+    "scripts/remote.mjs",
+    "scripts/Protect-State.ps1",
+    "locale/",
+    "assets/",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-settings-general",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-ui-workspace"
+      ],
+      "external": [
+        "react"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "verify": "node scripts/verify.mjs",
+    "pack:plugin": "npm pack --ignore-scripts"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "ws": "8.21.3"
+  },
+  "dependencies": {
+    "http-proxy-3": "1.23.3",
+    "qrcode": "1.5.4"
+  },
+  "bundledDependencies": ["http-proxy-3", "qrcode"]
+}
