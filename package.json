@@ -1,6 +1,6 @@
 {
   "name": "dsh-remote-aliyun",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "DeepSeek Harness (DSH) Desktop remote-control plugin: persistent links, QR pairing and mobile UI",
   "icon": "./assets/icon.svg",
   "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "desktop-plugin", "remote-control", "self-hosted", "ssh-tunnel"],

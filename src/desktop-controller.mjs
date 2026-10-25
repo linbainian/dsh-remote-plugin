@@ -17,6 +17,7 @@ export class DesktopRemoteController {
   constructor(options = {}) {
     this.directory = options.directory || defaultDirectory();
     this.configFile = options.configFile || path.join(this.directory, 'config.private.json');
+    this.desktopVersion = options.desktopVersion || null;
     this.executable = options.executable || process.execPath;
     this.launch = options.launch || spawn;
     this.enabled = false;
@@ -101,7 +102,7 @@ export class DesktopRemoteController {
     }
     return { enabled: this.enabled, configured:this.configured, configurationSupported:true, configuration:this.configuration, phase, publicOrigin: this.publicOrigin, devices,
       connectedDevices: status?.connectedDevices || 0, link: this.ticket, pairingState: this.ticket ? 'ready' : 'none',
-      error: this.lastError, desktopVersion: '0.2.1-rc.2', protocolVersion: 2,
+      error: this.lastError, desktopVersion: this.desktopVersion, protocolVersion: 2,
       gatewayUpdateRequired: !!status && status.protocolVersion !== 2 };
   }
 

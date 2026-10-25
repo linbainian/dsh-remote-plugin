@@ -8,6 +8,7 @@ import { DeviceStore, AttemptLimiter } from './auth-store.mjs';
 import { atomicJson, loadPrivateState, protectStateDirectory } from './state.mjs';
 import { acquireInstanceLease } from './instance-lease.mjs';
 import { pairPage } from './pair-page.mjs';
+import { PLUGIN_VERSION } from './compatibility.mjs';
 
 const cookieValue = (request, name) => {
   const entries = (request.headers.cookie || '').split(';').map(value => value.trim()).filter(value => value.startsWith(name + '='));
@@ -165,7 +166,7 @@ async function createLeasedGateway(options, lease) {
       for(const streams of live.values())for(const stream of streams)stream.destroy();live.clear();lastSeen.clear();
       return respond(response,200,{...link,url:`${publicUrl.origin}/pair#${link.secret}`,revokedAllDevices:true});
     }
-    if(request.method==='GET'&&pathname==='/status')return respond(response,200,{instanceId,protocolVersion:2,gatewayVersion:'0.5.1',publicOrigin:publicUrl.origin,gatewayOrigin,pairedDevices:devices.list().length,connectedDevices:devices.list().filter(device=>connected(device.id)).length,pairingAvailable:devices.pairingAvailable(),hostPid:cachedHost?.hostPid||null,transport:options.transportStatus?.()||null});
+    if(request.method==='GET'&&pathname==='/status')return respond(response,200,{instanceId,protocolVersion:2,gatewayVersion:PLUGIN_VERSION,publicOrigin:publicUrl.origin,gatewayOrigin,pairedDevices:devices.list().length,connectedDevices:devices.list().filter(device=>connected(device.id)).length,pairingAvailable:devices.pairingAvailable(),hostPid:cachedHost?.hostPid||null,transport:options.transportStatus?.()||null});
     if(request.method==='GET'&&pathname==='/devices')return respond(response,200,{devices:devices.list().map(device=>({...device,connected:connected(device.id),lastSeenAt:lastSeen.get(device.id)||null}))});
     if(request.method==='POST'&&pathname==='/pair'){const ticket=devices.issue();return respond(response,200,{...ticket,url:`${publicUrl.origin}/pair#${ticket.secret}`});}
     if(request.method==='POST'&&pathname==='/revoke'){const body=await jsonBody(request);if(typeof body.id!=='string')return respond(response,400,{error:'invalid-device'});await revoke(body.id);return respond(response,200,{revoked:true});}

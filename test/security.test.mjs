@@ -15,7 +15,7 @@ const state = () => ({ schemaVersion: 1, kind: 'dsh-desktop-step1', profile: 'de
 test('rejects remote origins, URL credentials, paths and mismatched bootstrap authority', () => {
   for (const value of ['http://example.com:12345', 'http://0.0.0.0:12345', 'http://user@127.0.0.1:12345', 'http://127.0.0.1:12345/path', 'http://127.0.0.1:12345/?token=secret']) assert.throws(() => loopbackOrigin(value));
   assert.throws(() => validatePrivateState({ ...state(), launchUrl: 'http://127.0.0.1:9999/?token=test-secret' }));
-  assert.throws(() => validatePrivateState({ ...state(), version: '0.2.2' }));
+  assert.throws(() => validatePrivateState({ ...state(), version: 'not-a-desktop-version' }));
 });
 
 test('bootstrap refuses cross-origin redirects without forwarding credentials', async () => {

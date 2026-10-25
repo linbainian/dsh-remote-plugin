@@ -64,7 +64,7 @@ test('persistent links survive years and reload; reset invalidates old links, de
   }finally{await rm(directory,{recursive:true,force:true});}
 });
 
-test('gateway enforces authentication, CSRF and Host; proxies HTTP/WS; revocation closes live sockets',async()=>{
+for (const desktopVersion of ['0.2.1-rc.2', '0.2.1-rc.3']) test(`gateway accepts Desktop ${desktopVersion}, enforces authentication and proxies HTTP/WS with revocation`,async()=>{
   const directory=await temporary(), instanceDirectory=path.join(directory,'instance');
   let gateway, core;
   const websocketServer=new WebSocketServer({noServer:true});
@@ -83,7 +83,7 @@ test('gateway enforces authentication, CSRF and Host; proxies HTTP/WS; revocatio
       websocketServer.handleUpgrade(request,socket,head,ws=>ws.on('message',data=>ws.send(data)));
     });
     await new Promise(resolve=>core.listen(0,'127.0.0.1',resolve));const coreOrigin=`http://127.0.0.1:${core.address().port}`;
-    await publishState(instanceDirectory,{schemaVersion:1,kind:'dsh-desktop-step1',profile:'desktop',version:'0.2.1-rc.2',instanceId:randomUUID(),hostPid:process.pid,origin:coreOrigin,launchUrl:coreOrigin+'/?token=fixture-bootstrap'});
+    await publishState(instanceDirectory,{schemaVersion:1,kind:'dsh-desktop-step1',profile:'desktop',version:desktopVersion,instanceId:randomUUID(),hostPid:process.pid,origin:coreOrigin,launchUrl:coreOrigin+'/?token=fixture-bootstrap'});
     gateway=await createGateway({stateDirectory:path.join(directory,'gateway'),instanceStateDirectory:instanceDirectory,publicOrigin:'http://127.0.0.1:0',allowLoopbackHttp:true});
     await assert.rejects(createGateway({stateDirectory:path.join(directory,'gateway'),instanceStateDirectory:instanceDirectory,publicOrigin:'http://127.0.0.1:0',allowLoopbackHttp:true}),/already owns/);
     const descriptor=JSON.parse(await readFile(path.join(directory,'gateway','gateway.private.json')));

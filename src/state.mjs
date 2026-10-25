@@ -5,8 +5,8 @@ import { homedir } from 'node:os';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
+import { isDesktopVersion } from './compatibility.mjs';
 
-export const TARGET_VERSION = '0.2.1-rc.2';
 export const CHANNEL = '/dsh-remote-aliyun-probe';
 export const defaultStateDirectory = () => path.join(process.env.DSH_HOME || path.join(homedir(), '.dsh'), 'remote-aliyun-step1');
 
@@ -19,7 +19,7 @@ export function loopbackOrigin(value) {
 }
 
 export function validatePrivateState(value) {
-  if (value?.schemaVersion !== 1 || value?.kind !== 'dsh-desktop-step1' || value?.profile !== 'desktop' || value.version !== TARGET_VERSION || typeof value.instanceId !== 'string' || !Number.isSafeInteger(value.hostPid) || value.hostPid <= 0) {
+  if (value?.schemaVersion !== 1 || value?.kind !== 'dsh-desktop-step1' || value?.profile !== 'desktop' || !isDesktopVersion(value.version) || typeof value.instanceId !== 'string' || !Number.isSafeInteger(value.hostPid) || value.hostPid <= 0) {
     throw new Error('Invalid or unsupported Desktop instance descriptor');
   }
   const origin = loopbackOrigin(value.origin);
